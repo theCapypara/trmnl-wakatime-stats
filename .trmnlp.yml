@@ -13,7 +13,7 @@ custom_fields:
   stats:
     - Categories
     - Editors
-  display: pie_chart_with_labels
+  display: bar_race
   include_other: "false"
 
 # override variables
