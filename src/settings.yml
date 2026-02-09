@@ -1,0 +1,65 @@
+#
+# Changes to this file will be overwritten by `trmnlp pull`.
+#
+# Docs: https://help.usetrmnl.com/en/articles/10542599-importing-and-exporting-private-plugins#h_581fb988f0
+#
+---
+name: WakaTime Stats
+strategy: polling
+polling_verb: get
+polling_url: 'https://wakatime.com/api/v1/users/{{ username }}/stats?is_including_today=true'
+polling_headers: ''
+refresh_interval: 1440
+
+no_screen_padding: 'no'
+dark_mode: 'no'
+
+custom_fields:
+  - keyname: info
+    field_type: author_bio
+    name: About This Plugin
+    description: |
+      This plugin displays WakaTime statistics using <a href="https://wakatime.com/developers#stats" target="_blank">WakaTime's API</a>.
+      To use the plugin, your profile must be set to public.
+      <br>
+      This plugin can show you the same information as you configured on your public profile,
+      except for the activity diagram. For that see <a href="https://trmnl.com/recipes/123718" target="_blank">WakaTime Dashboard</a>: a plugin that 
+      displays WakaTime coding activity.
+    category: productivity
+    github_url: "https://github.com/theCapypara/trmnl-wakatime-stats"
+  - keyname: show_times
+    field_type: boolean
+    name: Show times
+    description: Show total & daily average coding time (full & half vertical layout only)
+    default: "true"
+    optional: true
+  - keyname: username
+    field_type: string
+    name: Username
+    description: Your WakaTime username
+  - keyname: stats
+    field_type: select
+    name: Statistics
+    description: Configure what information to display.
+    help_text: "Use <kbd>⌘</kbd>+<kbd>click</kbd> or <kbd>ctrl</kbd>+<kbd>click</kbd> to select and deselect multiple options."
+    options:
+      - Categories: categories
+      - Editors: editors
+      - Languages: languages
+      - Operating Systems: operating_systems
+    multiple: true
+  - keyname: display
+    field_type: select
+    name: Display Style
+    description: How to display the selected statistics.
+    help_text: "'Pie Chart with labels' can only be used if only one 'Statistic' is chosen."
+    options:
+      - Item list: items
+      - Bar chart race: bar_race
+      - Pie Chart: pie_chart
+      - Pie Chart with labels: pie_chart_with_labels
+  - keyname: include_other
+    field_type: boolean
+    name: Include stats for the "Other" language
+    default: "true"
+    optional: true

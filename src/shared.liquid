@@ -1,0 +1,316 @@
+<script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
+<script src="https://trmnl.com/js/highcharts/12.3.0/pattern-fill.js"></script>
+
+<script type="module" data-id="{{ instance_id }}">
+    const DISPLAY_TYPE = "{{ trmnl.plugin_settings.custom_fields_values.display }}";
+    const CHARTS = document.querySelectorAll(".jschart");
+    const data = {{ data | json }};
+    CHARTS.forEach(chartContainer => {
+        const enableLabels = !chartContainer.classList.contains("hide-labels");
+        const statId = chartContainer.dataset.stat;
+        const seriesData = data[statId]
+            .values()
+            .filter(function (entry) {
+                {% if trmnl.plugin_settings.custom_fields_values.include_other == "true" %}
+                return true;
+                {% else %}
+                return statId != "languages" || entry.name != "Other";
+                {% endif %}
+            })
+            .take(8)
+            .map(function (entry) {
+                return {
+                    name: entry.name,
+                    y: entry.total_seconds,
+                    label: entry.text
+                }
+            })
+            .toArray();
+        if (DISPLAY_TYPE === "bar_race") {
+            Highcharts.chart(chartContainer, {
+                title: {
+                    text: ""
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                    type: 'category',
+                    labels: {
+                        style: {
+                            fontSize: '1.5em',
+                        },
+                        className: 'title'
+                    }
+                },
+                yAxis: {
+                    visible: false,
+                },
+                plotOptions: {
+                    series: {
+                        animation: false,
+                        groupPadding: 0,
+                        pointPadding: 0.1,
+                        borderWidth: 0,
+                        colorByPoint: false,
+                        color: '#ddd',
+                        dataSorting: {
+                            enabled: true,
+                            matchByName: true
+                        },
+                        type: 'bar',
+                        dataLabels: {
+                            enabled: true,
+                            overflow: "justify",
+                            className: 'description'
+                        }
+                    },
+                },
+                series: [
+                    {
+                        type: 'bar',
+                        data: seriesData,
+                        dataLabels: [{
+                            enabled: enableLabels,
+                            align: 'right',
+                            format: '{label}',
+                            style: {
+                                fontSize: '1.3em',
+                                textOutline: '3px contrast'
+                            }
+                        }]
+                    }
+                ],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 550
+                        },
+                        chartOptions: {
+                            xAxis: {
+                                visible: true,
+                                labels: {
+                                    style: {
+                                        fontSize: '0.9em',
+                                    },
+                                    className: 'title'
+                                }
+                            },
+                            series: [{
+                                dataLabels: [{
+                                    enabled: enableLabels,
+                                    inside: false,
+                                    format: '{label}',
+                                    style: {
+                                        fontSize: '0.9em',
+                                        textOutline: '3px contrast'
+                                    }
+                                }]
+                            }],
+                        }
+                    }]
+                },
+                credits: {
+                    enabled: false
+                }
+            });
+        } else if (DISPLAY_TYPE === "pie_chart_with_labels") {
+            Highcharts.chart(chartContainer, {
+                title: {
+                    text: ""
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        animation: false,
+                        borderWidth: 0,
+                        colorByPoint: true,
+                        type: 'pie',
+                        size: '100%',
+                        innerSize: '80%',
+                        dataLabels: {
+                            enabled: true,
+                            crop: false,
+                            distance: '-10%',
+                            style: {
+                                fontWeight: 'bold',
+                                fontSize: '1.2em',
+                                textOutline: '3px contrast'
+                            },
+                            className: 'description',
+                            connectorWidth: 0
+                        }
+                    }
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        data: seriesData
+                    }
+                ],
+                credits: {
+                    enabled: false
+                }
+            });
+        }
+    });
+</script>
+
+{% template stat_name %}
+{% if name == "operating_systems" %}
+    OS
+{% else %}
+    {{ name | capitalize }}
+{% endif %}
+{% endtemplate %}
+
+{% template times %}
+{% if trmnl.plugin_settings.custom_fields_values.show_times == "true" %}
+    <div class="mx--2 grid grid--cols-2 no-shrink">
+        <div class="item">
+            <div class="meta"></div>
+            <div class="content">
+                <span class="value value--tnums" data-value-fit="true">
+                    {{ data.human_readable_total }}
+                </span>
+                <span class="label text--gray-30">Total</span>
+            </div>
+        </div>
+        <div class="item">
+            <div class="meta"></div>
+            <div class="content">
+                <span class="value value--tnums" data-value-fit="true">
+                    {% if trmnl.plugin_settings.custom_fields_values.include_other == "true" %}
+                        {{ data.human_readable_daily_average_including_other_language }}
+                    {% else %}
+                        {{ data.human_readable_daily_average }}
+                    {% endif %}
+                </span>
+                <span class="label text--gray-30">Daily Average</span>
+            </div>
+        </div>
+    </div>
+    <div class="divider"></div>
+{% endif %}
+{% endtemplate %}
+
+
+{% template items %}
+{% comment %}See https://github.com/usetrmnl/trmnlp/issues/80{% endcomment %}
+{% if trmnl.is_trmnlp %}
+    {% assign _stats = "languages" | split: "," | sort %}
+{% else %}
+    {% assign _stats = trmnl.plugin_settings.custom_fields_values.stats | sort %}
+{% endif %}
+{% assign _stats_size = _stats | size %}
+{% if _stats_size > 1 %}
+    <!-- MULTIPLE SELECTED -->
+    <div class="columns">
+        {% for _stat in _stats %}
+            <div class="column" data-overflow="true" data-overflow-counter="true">
+                <span class="title">Top {% render "stat_name", name: _stat %}</span>
+                {% for _item in data[_stat] %}
+                    <div class="item">
+                        <div class="meta">
+                            <span class="index">{{ forloop.index }}</span>
+                        </div>
+                        <div class="content">
+                        <span class="title title--small title--base">
+                            <p>{{ _item.name }}</p>
+                        </span>
+                            <span class="description">
+                            {{ _item.text }}
+                        </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <!-- ONLY 1 SELECTED -->
+    {% assign _stat = _stats[0] %}
+    <span class="title">Top {% render "stat_name", name: _stat %}</span>
+    <div class="columns" data-overflow-max-cols="4" data-overflow-counter="true">
+        <div class="column">
+            {% for _item in data[_stat] %}
+                <div class="item">
+                    <div class="meta">
+                        <span class="index">{{ forloop.index }}</span>
+                    </div>
+                    <div class="content">
+                        <span class="title title--small title--base">
+                            <p>{{ _item.name }}</p>
+                        </span>
+                        <span class="description">
+                            {{ _item.text }}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+{% endtemplate %}
+
+{% template charts %}
+{% comment %}See https://github.com/usetrmnl/trmnlp/issues/80{% endcomment %}
+{% if trmnl.is_trmnlp %}
+    {% assign _stats = "languages" | split: "," | sort %}
+{% else %}
+    {% assign _stats = trmnl.plugin_settings.custom_fields_values.stats | sort %}
+{% endif %}
+{% assign _stats_size = _stats | size %}
+{% if trmnl.plugin_settings.custom_fields_values.display == "pie_chart_with_labels" %}
+    {% if _stats_size > 1 %}
+        <div class="stretch flex flex--col">
+            <span class="title title--xlarge">Error</span>
+            <span class="content">"Pie Chart with labels" can only be used if only one statistic is chosen.</span>
+        </div>
+    {% else %}
+        {% assign _stat = _stats[0] %}
+        <span class="title text--center stretch-x">Top {% render "stat_name", name: _stat %}</span>
+        <div class="columns">
+            <div class="column">
+                <div class="jschart {% if _stats_size > 3 %}hide-labels{% endif %}" data-stat="{{ _stat }}"></div>
+            </div>
+            <div class="column" data-overflow="true" data-overflow-counter="true">
+                {% for _item in data[_stat] %}
+                    <div class="item">
+                        <div class="meta">
+                            <span class="index">{{ forloop.index }}</span>
+                        </div>
+                        <div class="content">
+                            <span class="title title--small title--base">
+                                <p>{{ _item.name }}</p>
+                            </span>
+                            <span class="description">
+                                {{ _item.text }}
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="columns">
+        {% for _stat in _stats %}
+            <div class="column">
+                <span class="title text--center">Top {% render "stat_name", name: _stat %}</span>
+                <div class="jschart {% if _stats_size > 3 %}hide-labels{% endif %}" data-stat="{{ _stat }}"></div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endtemplate %}
+
+{% template title_bar %}
+<div class="title_bar">
+    <img class="image" src="https://wakatime.com/static/img/wakatime.svg">
+    <span class="title">{{ data.username }} ({{ data.human_readable_range }})</span>
+    <span class="instance">{{ trmnl.plugin_settings.instance_name }}</span>
+</div>
+{% endtemplate %}

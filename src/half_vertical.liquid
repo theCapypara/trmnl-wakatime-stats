@@ -1,0 +1,9 @@
+<div class="layout layout--col layout--left layout--content-start gap--large w--full h--full">
+    {% render "times", data: data, trmnl: trmnl %}
+    {% if trmnl.plugin_settings.custom_fields_values.display == "items" %}
+        {% render "items", data: data, trmnl: trmnl %}
+    {% else %}
+        {% render "charts", data: data, trmnl: trmnl %}
+    {% endif %}
+</div>
+{% render "title_bar", data: data, trmnl: trmnl %}
