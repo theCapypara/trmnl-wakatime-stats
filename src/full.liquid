@@ -3,7 +3,7 @@
     {% if trmnl.plugin_settings.custom_fields_values.display == "items" %}
         {% render "items", data: data, trmnl: trmnl %}
     {% else %}
-        {% render "charts", data: data, trmnl: trmnl %}
+        {% render "charts", data: data, trmnl: trmnl, charts_class: charts_class %}
     {% endif %}
 </div>
 {% render "title_bar", data: data, trmnl: trmnl %}

@@ -5,6 +5,7 @@
 <script type="module" data-id="{{ instance_id }}">
     const DISPLAY_TYPE = "{{ trmnl.plugin_settings.custom_fields_values.display }}";
     const CHARTS = document.querySelectorAll(".{{ charts_class }}");
+    console.log(CHARTS);
     const data = {{ data | json }};
     CHARTS.forEach(chartContainer => {
         const enableLabels = !chartContainer.classList.contains("hide-labels");
@@ -121,7 +122,7 @@
                     enabled: false
                 }
             });
-        } else if (DISPLAY_TYPE === "pie_chart_with_labels") {
+        } else if (DISPLAY_TYPE === "pie_chart_with_labels" || DISPLAY_TYPE === "pie_chart") {
             Highcharts.chart(chartContainer, {
                 title: {
                     text: ""
@@ -237,7 +238,7 @@
 {% template items %}
 {% comment %}See https://github.com/usetrmnl/trmnlp/issues/80{% endcomment %}
 {% if trmnl.is_trmnlp %}
-    {% assign _stats = "languages" | split: "," | sort %}
+    {% assign _stats = "languages,editors" | split: "," | sort %}
 {% else %}
     {% assign _stats = trmnl.plugin_settings.custom_fields_values.stats | sort %}
 {% endif %}
@@ -254,7 +255,7 @@
                             <span class="index">{{ forloop.index }}</span>
                         </div>
                         <div class="content">
-                        <span class="title title--small title--base">
+                        <span class="title title--small lg:title--large">
                             <p>{{ _item.name }}</p>
                         </span>
                             <span class="description">
@@ -278,7 +279,7 @@
                         <span class="index">{{ forloop.index }}</span>
                     </div>
                     <div class="content">
-                        <span class="title title--small title--base">
+                        <span class="title title--small lg:title--base">
                             <p>{{ _item.name }}</p>
                         </span>
                         <span class="description">
@@ -295,7 +296,7 @@
 {% template charts %}
 {% comment %}See https://github.com/usetrmnl/trmnlp/issues/80{% endcomment %}
 {% if trmnl.is_trmnlp %}
-    {% assign _stats = "languages" | split: "," | sort %}
+    {% assign _stats = "languages,editors" | split: "," | sort %}
 {% else %}
     {% assign _stats = trmnl.plugin_settings.custom_fields_values.stats | sort %}
 {% endif %}
@@ -321,7 +322,7 @@
                             <span class="index">{{ forloop.index }}</span>
                         </div>
                         <div class="content">
-                            <span class="title title--small title--base">
+                            <span class="title title--small lg:title--large">
                                 <p>{{ _item.name }}</p>
                             </span>
                             <span class="description">
