@@ -248,7 +248,7 @@
     <div class="columns">
         {% for _stat in _stats %}
             <div class="column" data-overflow="true" data-overflow-counter="true">
-                <span class="title">Top {% render "stat_name", name: _stat %}</span>
+                <span class="title {% if small_title %}title--small{% endif %}">Top {% render "stat_name", name: _stat %}</span>
                 {% for _item in data[_stat] %}
                     <div class="item">
                         <div class="meta">
@@ -270,7 +270,7 @@
 {% else %}
     <!-- ONLY 1 SELECTED -->
     {% assign _stat = _stats[0] %}
-    <span class="title">Top {% render "stat_name", name: _stat %}</span>
+    <span class="title {% if small_title %}title--small{% endif %}">Top {% render "stat_name", name: _stat %}</span>
     <div class="columns" data-overflow-max-cols="4" data-overflow-counter="true">
         <div class="column">
             {% for _item in data[_stat] %}
@@ -309,7 +309,7 @@
         </div>
     {% else %}
         {% assign _stat = _stats[0] %}
-        <span class="title text--center stretch-x">Top {% render "stat_name", name: _stat %}</span>
+        <span class="title text--center stretch-x {% if small_title %}title--small{% endif %}">Top {% render "stat_name", name: _stat %}</span>
         <div class="columns">
             <div class="column">
                 <div class="{{ charts_class }} {% if _stats_size > 3 %}hide-labels{% endif %}"
@@ -338,7 +338,7 @@
     <div class="columns">
         {% for _stat in _stats %}
             <div class="column">
-                <span class="title text--center">Top {% render "stat_name", name: _stat %}</span>
+                <span class="title text--center {% if small_title %}title--small{% endif %}">Top {% render "stat_name", name: _stat %}</span>
                 <div class="{{ charts_class }} {% if _stats_size > 3 %}hide-labels{% endif %}"
                      data-stat="{{ _stat }}"></div>
             </div>
