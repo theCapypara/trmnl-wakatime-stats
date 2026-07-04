@@ -1,4 +1,5 @@
 {% assign charts_class = "charts-" | append_random %}
+{% assign ai_charts_id = "aichart-" | append_random %}
 <script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
 <script src="https://trmnl.com/js/highcharts/12.3.0/pattern-fill.js"></script>
 
@@ -119,6 +120,9 @@
                         }
                     }]
                 },
+                chart: {
+                    animation: false,
+                },
                 credits: {
                     enabled: false
                 }
@@ -189,6 +193,9 @@
                         data: seriesData
                     }
                 ],
+                chart: {
+                    animation: false,
+                },
                 credits: {
                     enabled: false
                 }
@@ -197,7 +204,7 @@
     });
 
     // -- AI stats Chart
-    const AI_CHART = document.querySelector("#ai-chart");
+    const AI_CHART = document.querySelector("#{{ ai_charts_id }}");
     if (AI_CHART) {
         const seriesData = [
             {name: "ai", y: data.ai_additions + data.ai_deletions},
@@ -247,6 +254,7 @@
                 }
             ],
             chart: {
+                animation: false,
                 height: 65,
                 width: 65,
                 margin: 0,
@@ -342,7 +350,7 @@
         {% endif %}
         {% if _show_ai_percentage == "true" %}
             <div class="no-shrink flex flex--center-y gap--xsmall">
-                <div class="no-shrink" id="ai-chart"></div>
+                <div class="no-shrink" id="{{ ai_charts_id }}"></div>
                 <span class="no-shrink description text--center">AI<br>-driven</span>
             </div>
         {% endif %}

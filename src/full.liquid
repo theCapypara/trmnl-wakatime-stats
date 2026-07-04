@@ -2,7 +2,7 @@
     {% render "error_info", errors: errors %}
 {% else %}
     <div class="layout layout--col layout--left layout--content-start gap--large w--full h--full">
-        {% render "times", data: data, trmnl: trmnl %}
+        {% render "times", data: data, trmnl: trmnl, ai_charts_id: ai_charts_id %}
         {% if trmnl.plugin_settings.custom_fields_values.display == "items" %}
             {% render "items", data: data, trmnl: trmnl %}
         {% else %}
