@@ -12,9 +12,11 @@ custom_fields:
   show_times: "true"
   show_ai_percentage: "true"
   stats:
-    - categories
-    - editors
-  display: pie_chart
+    - dependencies
+    - operating_systems
+    - projects
+    - machines
+  display: items
   include_other: "false"
 
 # override variables

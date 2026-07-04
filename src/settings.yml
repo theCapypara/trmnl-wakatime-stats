@@ -71,6 +71,9 @@ custom_fields:
       - Editors: editors
       - Languages: languages
       - Operating Systems: operating_systems
+      - Machines: machines
+      - Projects: projects
+      - Dependencies: dependencies
     multiple: true
   - keyname: display
     field_type: select
