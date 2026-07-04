@@ -236,12 +236,7 @@
 
 
 {% template items %}
-{% comment %}See https://github.com/usetrmnl/trmnlp/issues/80{% endcomment %}
-{% if trmnl.is_trmnlp %}
-    {% assign _stats = "languages,editors" | split: "," | sort %}
-{% else %}
-    {% assign _stats = trmnl.plugin_settings.custom_fields_values.stats | sort %}
-{% endif %}
+{% assign _stats = trmnl.plugin_settings.custom_fields_values.stats | sort %}
 {% assign _stats_size = _stats | size %}
 {% if _stats_size > 1 %}
     <!-- MULTIPLE SELECTED -->
@@ -294,12 +289,7 @@
 {% endtemplate %}
 
 {% template charts %}
-{% comment %}See https://github.com/usetrmnl/trmnlp/issues/80{% endcomment %}
-{% if trmnl.is_trmnlp %}
-    {% assign _stats = "languages,editors" | split: "," | sort %}
-{% else %}
-    {% assign _stats = trmnl.plugin_settings.custom_fields_values.stats | sort %}
-{% endif %}
+{% assign _stats = trmnl.plugin_settings.custom_fields_values.stats | sort %}
 {% assign _stats_size = _stats | size %}
 {% if trmnl.plugin_settings.custom_fields_values.display == "pie_chart_with_labels" %}
     {% if _stats_size > 1 %}

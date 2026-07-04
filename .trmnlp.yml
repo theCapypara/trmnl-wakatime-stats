@@ -11,8 +11,8 @@ custom_fields:
   username: theCapypara
   show_times: "true"
   stats:
-    - Categories
-    - Editors
+    - categories
+    - editors
   display: bar_race
   include_other: "false"
 
