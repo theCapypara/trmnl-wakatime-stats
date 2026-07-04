@@ -10,10 +10,11 @@ watch:
 custom_fields:
   username: theCapypara
   show_times: "true"
+  show_ai_percentage: "true"
   stats:
     - categories
     - editors
-  display: bar_race
+  display: pie_chart
   include_other: "false"
 
 # override variables

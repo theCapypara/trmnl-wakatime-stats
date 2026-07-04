@@ -36,6 +36,12 @@ custom_fields:
     description: Show total & daily average coding time (full & half vertical layout only)
     default: "true"
     optional: true
+  - keyname: show_ai_percentage
+    field_type: boolean
+    name: Show AI stats
+    description: Show a percentage of AI vs. human coding time (full & half vertical layout only)
+    default: "false"
+    optional: true
   #######################################################
   # NOTE: This only exists locally for trmnlp, see README
   - keyname: username

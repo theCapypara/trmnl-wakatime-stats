@@ -3,6 +3,7 @@
 <script src="https://trmnl.com/js/highcharts/12.3.0/pattern-fill.js"></script>
 
 <script type="module" data-id="{{ instance_id }}">
+    // -- Main Charts
     const DISPLAY_TYPE = "{{ trmnl.plugin_settings.custom_fields_values.display }}";
     const CHARTS = document.querySelectorAll(".{{ charts_class }}");
     console.log(CHARTS);
@@ -194,6 +195,101 @@
             });
         }
     });
+
+    // -- AI stats Chart
+    const AI_CHART = document.querySelector("#ai-chart");
+    if (AI_CHART) {
+        const seriesData = [
+            {name: "ai", y: data.ai_additions + data.ai_deletions},
+            {name: "human", y: data.human_additions + data.human_deletions},
+        ];
+        Highcharts.chart(AI_CHART, {
+            title: {
+                text: ""
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    animation: false,
+                    borderWidth: 0,
+                    colorByPoint: true,
+                    type: 'pie',
+                    size: '170%',
+                    innerSize: '70%',
+                    dataLabels: {
+                        enabled: false,
+                    },
+                    enableMouseTracking: false,
+                    colors: [
+                        {
+                            pattern: {
+                                image: "https://trmnl.com/images/grayscale/gray-2.png",
+                                width: 12,
+                                height: 12
+                            }
+                        },
+                        {
+                            pattern: {
+                                image: "https://trmnl.com/images/grayscale/gray-7.png",
+                                width: 12,
+                                height: 12
+                            }
+                        }
+                    ]
+                }
+            },
+            series: [
+                {
+                    type: 'pie',
+                    data: seriesData
+                }
+            ],
+            chart: {
+                height: 65,
+                width: 65,
+                margin: 0,
+                spacing: 0,
+                custom: {},
+                events: {
+                    render() {
+                        const chart = this,
+                            series = chart.series[0];
+                        let customLabel = chart.options.chart.custom.label;
+
+                        const prct = Math.round((seriesData[0]["y"] / (seriesData[0]["y"] + seriesData[1]["y"])) * 100);
+
+                        if (!customLabel) {
+                            customLabel = chart.options.chart.custom.label =
+                                chart.renderer.label(`${prct}%`)
+                                    .css({
+                                        textAnchor: 'middle',
+                                        fontSize: `14px`,
+                                        fontFamily: 'var(--description-font-family)',
+                                        fontWeight: 'var(--description-font-weight)',
+                                        lintHeight: 'var(--description-line-height)',
+                                        color: 'var(--framework-text-primary)'
+                                    })
+                                    .add();
+                        }
+
+                        const x = series.center[0] + chart.plotLeft - 2,
+                            y = series.center[1] + chart.plotTop -
+                                (customLabel.attr('height') / 2);
+
+                        customLabel.attr({
+                            x,
+                            y
+                        });
+                    }
+                }
+            },
+            credits: {
+                enabled: false
+            }
+        });
+    }
 </script>
 
 {% template stat_name %}
@@ -205,30 +301,51 @@
 {% endtemplate %}
 
 {% template times %}
-{% if trmnl.plugin_settings.custom_fields_values.show_times == "true" %}
-    <div class="mx--2 grid grid--cols-2 no-shrink">
-        <div class="item">
-            <div class="meta"></div>
-            <div class="content">
-                <span class="value value--tnums" data-value-fit="true">
-                    {{ data.human_readable_total }}
-                </span>
-                <span class="label text--gray-30">Total</span>
+{% assign _show_times = trmnl.plugin_settings.custom_fields_values.show_times %}
+{% assign _show_ai_percentage = trmnl.plugin_settings.custom_fields_values.show_ai_percentage %}
+{% if _show_times == "true" or _show_ai_percentage == "true" %}
+    <div class="mx--2 gap flex no-shrink stretch-x">
+        {% if _show_times == "true" %}
+            <div class="grid grid--cols-2">
+                <div class="item">
+                    <div class="meta"></div>
+                    <div class="content">
+                        <span class="value value--tnums" data-value-fit="true">
+                            {% if small_text %}
+                                {{ data.human_readable_total | split: " hrs" | first }} hrs
+                            {% else %}
+                                {{ data.human_readable_total }}
+                            {% endif %}
+                        </span>
+                        <span class="label text--gray-30">Total</span>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="meta"></div>
+                    <div class="content">
+                        <span class="value value--tnums" data-value-fit="true">
+                            {% if trmnl.plugin_settings.custom_fields_values.include_other == "true" %}
+                                {% assign _daily_average = data.human_readable_daily_average_including_other_language %}
+                            {% else %}
+                                {% assign _daily_average = data.human_readable_daily_average %}
+                            {% endif %}
+                            {% if small_text %}
+                                {{ _daily_average | split: " hrs" | first }} hrs
+                            {% else %}
+                                {{ _daily_average }}
+                            {% endif %}
+                        </span>
+                        <span class="label text--gray-30">{% unless small_text %}Daily {% endunless %}Average</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="item">
-            <div class="meta"></div>
-            <div class="content">
-                <span class="value value--tnums" data-value-fit="true">
-                    {% if trmnl.plugin_settings.custom_fields_values.include_other == "true" %}
-                        {{ data.human_readable_daily_average_including_other_language }}
-                    {% else %}
-                        {{ data.human_readable_daily_average }}
-                    {% endif %}
-                </span>
-                <span class="label text--gray-30">Daily Average</span>
+        {% endif %}
+        {% if _show_ai_percentage == "true" %}
+            <div class="no-shrink flex flex--center-y gap--xsmall">
+                <div class="no-shrink" id="ai-chart"></div>
+                <span class="no-shrink description text--center">AI<br>-driven</span>
             </div>
-        </div>
+        {% endif %}
     </div>
     <div class="divider"></div>
 {% endif %}
