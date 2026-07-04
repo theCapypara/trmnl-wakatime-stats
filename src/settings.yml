@@ -7,7 +7,10 @@
 name: WakaTime Stats
 strategy: polling
 polling_verb: get
+# NOTE: The live plugin uses OAuth and the following poll URL instead: https://wakatime.com/api/v1/users/current/stats/{{ range }}?is_including_today=true
 polling_url: 'https://wakatime.com/api/v1/users/{{ username }}/stats?is_including_today=true'
+# see note above
+#polling_header: 'Authorization=Bearer {{ oauth_access_token }}'
 polling_headers: ''
 refresh_interval: 1440
 
@@ -20,9 +23,9 @@ custom_fields:
     name: About This Plugin
     description: |
       This plugin displays WakaTime statistics using <a href="https://wakatime.com/developers#stats" target="_blank">WakaTime's API</a>.
-      To use the plugin, your profile must be set to public.
+      It requires you to authorize the plugin with your WakaTime Account. Your profile doesn't have to be set to public.
       <br>
-      This plugin can show you the same information as you configured on your public profile,
+      This plugin can show you the same information as you display on your profile,
       except for the activity diagram. For that see <a href="https://trmnl.com/recipes/123718" target="_blank">WakaTime Dashboard</a>: a plugin that 
       displays WakaTime coding activity.
     category: productivity
@@ -33,10 +36,25 @@ custom_fields:
     description: Show total & daily average coding time (full & half vertical layout only)
     default: "true"
     optional: true
+  #######################################################
+  # NOTE: This only exists locally for trmnlp, see README
   - keyname: username
     field_type: string
     name: Username
     description: Your WakaTime username
+  #######################################################
+  # NOTE: These are not used locally for trmnlp, see README
+  - keyname: range
+    field_type: select
+    name: Range
+    options:
+      - Last 7 Days: last_7_days
+      - Last 30 Days: last_30_days
+      - Last 6 Months: last_6_months
+      - Last Year: last_year
+      - All Time: all_time
+    default: last_7_days
+  #######################################################
   - keyname: stats
     field_type: select
     name: Statistics

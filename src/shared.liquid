@@ -340,7 +340,36 @@
 {% template title_bar %}
 <div class="title_bar">
     <img class="image" src="https://wakatime.com/static/img/wakatime.svg">
-    <span class="title">{{ data.username }} ({{ data.human_readable_range }})</span>
+    <span class="title">{% if data.username %}{{ data.username }} ({{ data.human_readable_range }}){% endif %}</span>
     <span class="instance">{{ trmnl.plugin_settings.instance_name }}</span>
+</div>
+{% endtemplate %}
+
+{% template error_info %}
+<div class="layout w--full h--full">
+    <div class="flex flex--row gap--xlarge">
+        <div><img src="https://capypara.de/caution.svg" class="w--36"></div>
+        <div class="stretch-x">
+            <p><span class="title">Failed loading WakaTime Stats</span></p>
+            </p>
+            <span class="description description--large">
+                    {% if errors contains "Unauthorized." %}
+                        This plugin requires OAuth authorization, please log in to your WakaTime account using the plugins's
+                        settings. If you installed this plugin previously before this was required, you may need to reinstall
+                        the plugin.
+                    {% else %}
+                        WakaTime's API reported the following errors:
+                        <ul>
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        <br>
+                        If the error persists, try re-authenticating the plugin.
+                    {% endif %}
+                </span>
+            </p>
+        </div>
+    </div>
 </div>
 {% endtemplate %}
