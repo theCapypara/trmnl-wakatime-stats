@@ -1,55 +1,54 @@
-#
-# Changes to this file will be overwritten by `trmnlp pull`.
-#
-# Docs: https://help.usetrmnl.com/en/articles/10542599-importing-and-exporting-private-plugins#h_581fb988f0
-#
 ---
-name: WakaTime Stats
 strategy: polling
-polling_verb: get
-# NOTE: The live plugin uses OAuth and the following poll URL instead: https://wakatime.com/api/v1/users/current/stats/{{ range }}?is_including_today=true
-polling_url: 'https://wakatime.com/api/v1/users/{{ username }}/stats?is_including_today=true'
-# see note above
-#polling_header: 'Authorization=Bearer {{ oauth_access_token }}'
-polling_headers: ''
-refresh_interval: 1440
-
 no_screen_padding: 'no'
 dark_mode: 'no'
-
+static_data: ''
+polling_verb: get
+framework_version: 3.1.1
+serverless_language: python
+polling_url: https://wakatime.com/api/v1/users/current/stats/{{ range }}?is_including_today=true
+polling_headers: Authorization=Bearer {{ oauth_access_token }}
+polling_body: ''
+id: 241536
+oauth_enabled: 'true'
+oauth_pkce_enabled: 'no'
+oauth_authorize_url: https://wakatime.com/oauth/authorize
+oauth_token_url: https://wakatime.com/oauth/token
+oauth_scopes: read_stats
+oauth_scope_separator: ''
+oauth_refresh_url: ''
+oauth_auth_params: ''
+oauth_token_headers: ''
+oauth_token_site: ''
+oauth_token_params: ''
+oauth_token_request_auth_method: ''
+oauth_body_format: ''
+oauth_token_response_metadata: ''
+oauth_authorization_method: ''
+oauth_refresh_params: ''
+oauth_token_field_name: ''
+oauth_expiry_field_name: ''
+oauth_expiry_strategy: ''
+oauth_fixed_expiry_ms: ''
 custom_fields:
   - keyname: info
     field_type: author_bio
     name: About This Plugin
-    description: |
-      This plugin displays WakaTime statistics using <a href="https://wakatime.com/developers#stats" target="_blank">WakaTime's API</a>.
-      It requires you to authorize the plugin with your WakaTime Account. Your profile doesn't have to be set to public.
-      <br>
-      This plugin can show you the same information as you display on your profile,
-      except for the activity diagram. For that see <a href="https://trmnl.com/recipes/123718" target="_blank">WakaTime Dashboard</a>: a plugin that 
-      displays WakaTime coding activity.
+    description: "This plugin displays WakaTime statistics using <a href=\"https://wakatime.com/developers#stats\" target=\"_blank\">WakaTime's API</a>.\nIt requires you to authorize the plugin with your WakaTime Account. Your profile doesn't have to be set to public.\n<br>\nThis plugin can show you the same information as you display on your profile,\nexcept for the activity diagram. For that see <a href=\"https://trmnl.com/recipes/123718\" target=\"_blank\">WakaTime Dashboard</a>: a plugin that \ndisplays WakaTime coding activity.\n"
     category: productivity
-    github_url: "https://github.com/theCapypara/trmnl-wakatime-stats"
+    github_url: https://github.com/theCapypara/trmnl-wakatime-stats
   - keyname: show_times
     field_type: boolean
     name: Show times
     description: Show total & daily average coding time (full & half vertical layout only)
-    default: "true"
+    default: 'true'
     optional: true
   - keyname: show_ai_percentage
     field_type: boolean
     name: Show AI stats
     description: Show a percentage of AI vs. human coding time (full & half vertical layout only)
-    default: "false"
+    default: 'false'
     optional: true
-  #######################################################
-  # NOTE: This only exists locally for trmnlp, see README
-  - keyname: username
-    field_type: string
-    name: Username
-    description: Your WakaTime username
-  #######################################################
-  # NOTE: These are not used locally for trmnlp, see README
   - keyname: range
     field_type: select
     name: Range
@@ -60,12 +59,11 @@ custom_fields:
       - Last Year: last_year
       - All Time: all_time
     default: last_7_days
-  #######################################################
   - keyname: stats
     field_type: select
     name: Statistics
     description: Configure what information to display.
-    help_text: "Use <kbd>⌘</kbd>+<kbd>click</kbd> or <kbd>ctrl</kbd>+<kbd>click</kbd> to select and deselect multiple options."
+    help_text: Use <kbd>⌘</kbd>+<kbd>click</kbd> or <kbd>ctrl</kbd>+<kbd>click</kbd> to select and deselect multiple options.
     options:
       - Categories: categories
       - Editors: editors
@@ -88,5 +86,7 @@ custom_fields:
   - keyname: include_other
     field_type: boolean
     name: Include stats for the "Other" language
-    default: "true"
+    default: 'true'
     optional: true
+name: WakaTime Stats
+refresh_interval: 1440

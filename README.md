@@ -7,10 +7,7 @@ This plugin can show you the same information as you configured on your public p
 except for the activity diagram. For that see [heroheman's plugin](https://trmnl.com/recipes/123718): a plugin that
 displays WakaTime coding activity.
 
-## Important Note about this Repo
+## Running locally
 
-**The plugin has switched to using OAuth.**
-
-Unfortunately TRMNL's infrastructure doesn't support locally
-editing recipes that use OAuth2 yet. This means that this
-repo still uses non-OAuth using the public profile URL.
+You can run this locally with trmnlp, make sure to set the environment variables for
+OAuth. See [trmnlp's documentation](https://github.com/usetrmnl/trmnlp#oauth2).

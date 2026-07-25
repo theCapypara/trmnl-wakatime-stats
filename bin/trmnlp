@@ -29,6 +29,8 @@ then
         --publish 4567:4567 \
         --volume "$(pwd):/plugin" \
         --volume "$CONFIG_DIR:/root/.config/trmnlp" \
+        --env "TRMNL_OAUTH_CLIENT_ID=${TRMNL_OAUTH_CLIENT_ID-}" \
+        --env "TRMNL_OAUTH_CLIENT_SECRET=${TRMNL_OAUTH_CLIENT_SECRET-}" \
         trmnl/trmnlp "$@"
     exit
 fi
