@@ -3,7 +3,7 @@ def run(input):
         return {"errors": [
             f"WakaTime did not return any data."
         ]}
-    elif input["data"]["status"] != "ok":
+    elif input["data"]["status"] not in ["ok", "pending_update"]:
         return {"errors": [
             f"WakaTime does not have the stats calculated yet. Current status: {input["data"]["status"]} "
             f"({input["data"]["percent_calculated"] if "percent_calculated" in input["data"] else 0}%)."
