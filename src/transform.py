@@ -12,8 +12,8 @@ def run(input):
         # Make sure the Payload doesn't exceed the limit
         for key in ("dependencies", "operating_systems", "projects", "machines"):
             if key in input["data"]:
-                input["data"][key] = input["data"][key][:75]
+                input["data"][key] = input["data"][key][:70]
         for key in ("languages",):
             if key in input["data"]:
-                input["data"][key] = input["data"][key][:150]
+                input["data"][key] = input["data"][key][:125]
     return input
